@@ -18,3 +18,15 @@ jobs:
     steps:
       - name: say hello
         run: echo 'hello world'
+      - name: Create status
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.workflow_run.head_commit.id }} \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "state": "success",
+            "context": "dummy test",
+            "target_url": "${{ github.event.workflow_run.html_url }}"
+            }' \
+          --fail
